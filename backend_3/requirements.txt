@@ -1,0 +1,22 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic-settings
+passlib[bcrypt]
+jose
+python-dotenv
+google-cloud-aiplatform
+elasticsearch
+psycopg2
+pyjwt
+sqlalchemy-utils
+pypdf
+langchain
+chromadb # Vector storage
+pytest
+boto3
+langchain-pinecone
+langchain-google-genai
+sentence-transformers
+langchain-huggingface
+langchain-community
