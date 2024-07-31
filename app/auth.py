@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 import jwt
 from sqlalchemy.orm import Session
-import agent_manager, models, schemas
+import users_manager, models, schemas
 from dependencies import get_db
 from database import settings
 from security import verify_password
@@ -12,7 +12,7 @@ from security import verify_password
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def authenticate_user(db: Session, email: str, password: str):
-    user = agent_manager.get_user_by_email(db, email)
+    user = users_manager.get_user_by_email(db, email)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -32,7 +32,7 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
-    user = agent_manager.get_user_by_email(db, email=user_id)
+    user = users_manager.get_user_by_email(db, email=user_id)
     if user is None:
         raise credentials_exception
     return user
