@@ -15,8 +15,8 @@ def load_documents(file_path):
     ext = os.path.splitext(file_path)[-1].lower()
     if ext == ".pdf":
         document_loader = PyPDFLoader(file_path)
-    # elif ext == ".txt":
-    #     document_loader = TextLoader(file_path)
+    elif ext == ".txt":
+        document_loader = TextLoader(file_path)
     # elif ext == ".html":
     #     document_loader = UnstructuredHTMLLoader(file_path)
     else:
@@ -36,7 +36,7 @@ def split_documents(documents: list[Document]):
 
 def add_to_vectordb(index_name: str, chunks: list[Document]):
     # Load the existing database.
-    db = PineconeVectorStore(index_name, embedding=get_embedding_function())
+    db = PineconeVectorStore(index_name=index_name, embedding=get_embedding_function())
     print(db)
     # Calculate Page IDs.
     chunks_with_ids = calculate_chunk_ids(chunks)

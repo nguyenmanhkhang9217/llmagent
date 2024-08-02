@@ -9,7 +9,7 @@ import os
 
 router = APIRouter()
 agent_manager = AgentManager()
-FILE_PATH = "files"
+FILE_PATH = "data"
 @router.post("/agents/{agent_id}/files/")
 async def upload_file(agent_id: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
     db_agent = db.query(Agent).filter(Agent.id == agent_id).first()
@@ -28,5 +28,5 @@ async def upload_file(agent_id: str, file: UploadFile = File(...), db: Session =
     # db.commit()
     # db.refresh(user_file)
 
-    agent_manager.add_file_to_agent(agent_id, file_location)
+    agent_manager.add_file_to_agent(file_location)
     return {"filename": file_location}

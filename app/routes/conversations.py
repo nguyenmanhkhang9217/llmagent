@@ -13,7 +13,7 @@ class ChatRequest(BaseModel):
     user_input: str
 
 @router.post("/agents/{agent_id}/chat/")
-async def chat_with_agent(agent_id: int, request: ChatRequest, db: Session = Depends(get_db)):
+async def chat_with_agent(agent_id: str, request: ChatRequest, db: Session = Depends(get_db)):
     db_agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if db_agent is None:
         raise HTTPException(status_code=404, detail="Agent not found")

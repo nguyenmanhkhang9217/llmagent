@@ -67,7 +67,7 @@ class AgentManager:
         # Add file to the vector database
         self.add_file_to_agent(file_path)
 
-    def add_file_to_agent(self, agent_id: int, file_path: str):
+    def add_file_to_agent(self, file_path: str):
 
         document = load_documents(file_path)
         chunks = split_documents(document)
