@@ -12,7 +12,6 @@ pyjwt
 sqlalchemy-utils
 pypdf
 langchain
-chromadb # Vector storage
 pytest
 boto3
 langchain-pinecone

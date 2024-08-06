@@ -1,0 +1,38 @@
+version: "3.7"
+
+networks:
+  llmagent-network:
+    driver: bridge
+
+volumes:
+    postgres:
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${BACKEND_PORT:-9000}:9000"
+    volumes:
+      - ./:/code
+    depends_on:
+      - postgres
+    networks:
+      - llmagent-network
+    
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
+    networks:
+      - llmagent-network
+    restart: unless-stopped

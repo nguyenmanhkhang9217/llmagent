@@ -1,15 +1,15 @@
 # backend/app/auth.py
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import jwt
 from sqlalchemy.orm import Session
 import users_manager, models, schemas
 from dependencies import get_db
 from database import settings
-from security import verify_password
+from security import get_password_hash, verify_password
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+sercurity = HTTPBearer()
 
 def authenticate_user(db: Session, email: str, password: str):
     user = users_manager.get_user_by_email(db, email)
@@ -19,14 +19,17 @@ def authenticate_user(db: Session, email: str, password: str):
         return False
     return user
 
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def register_user(db: Session, user: schemas.UserCreate):
+    return users_manager.create_user(db, user)
+
+def get_current_user(db: Session = Depends(get_db), credentials: HTTPAuthorizationCredentials = Depends(sercurity)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(credentials.credentials, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id: int = payload.get("sub")
         if user_id is None:
             raise credentials_exception

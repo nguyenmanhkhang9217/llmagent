@@ -6,7 +6,11 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = os.environ['DATABASE_URL']
+    POSTGRES_HOST: str = os.environ['POSTGRES_HOST']
+    POSTGRES_USER: str = os.environ['POSTGRES_USER']
+    POSTGRES_PASSWORD: str = os.environ['POSTGRES_PASSWORD']
+    POSTGRES_DB: str = os.environ['POSTGRES_DB']
+    DATABASE_URL: str = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}"
     SECRET_KEY: str = os.environ['SECRET_KEY']
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
