@@ -5,19 +5,22 @@ networks:
     driver: bridge
 
 volumes:
-    postgres:
+  postgres:
+  chromadb:
 
 services:
   backend:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: llmagent-backend
     ports:
       - "${BACKEND_PORT:-9000}:9000"
     volumes:
       - ./:/code
     depends_on:
       - postgres
+      - chroma
     networks:
       - llmagent-network
     
@@ -33,6 +36,19 @@ services:
        - postgres:/data/postgres
     ports:
       - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
+    networks:
+      - llmagent-network
+    restart: unless-stopped
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    container_name: chromadb
+    environment:
+      - IS_PERSISTENT=TRUE
+    ports:
+      - "${CHROMA_PORT:-8000}:${CHROMA_PORT:-8000}"
+    volumes:
+      - chromadb:/chroma/chroma/
     networks:
       - llmagent-network
     restart: unless-stopped

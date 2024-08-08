@@ -1,17 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from models import Agent, AgentCreate, AgentResponse
-from agent_manager import AgentManager
-from dependencies import get_db, generate_random_id
+from dependencies import get_db, generate_lower_case_alphanumeric
 import schemas, auth
 
 router = APIRouter()
-agent_manager = AgentManager()
 
 
 @router.post("/agents/")
 def create_agent(agent: AgentCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(auth.get_current_user)):
-    id = generate_random_id()
+    id = generate_lower_case_alphanumeric()
     db_agent = Agent(id=id, name=agent.name, user_id=current_user.id, description=agent.description)
     try:
         db.add(db_agent)

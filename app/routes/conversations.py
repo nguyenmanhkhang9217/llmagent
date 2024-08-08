@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from agent_manager import AgentManager
+from llm import LLMAgent
 from models import Agent
 from dependencies import get_db
+from config import llm_types
 
 router = APIRouter()
-agent_manager = AgentManager()
+agent = LLMAgent()
 
 class ChatRequest(BaseModel):
     # agent_id: str
@@ -17,5 +18,5 @@ async def chat_with_agent(agent_id: str, request: ChatRequest, db: Session = Dep
     db_agent = db.query(Agent).filter(Agent.id == agent_id).first()
     if db_agent is None:
         raise HTTPException(status_code=404, detail="Agent not found")
-    response = agent_manager.chat_with_agent(agent_id, request.user_input)
+    response = agent.chat(llm_types, agent_id, request.user_input)
     return {"response": response}

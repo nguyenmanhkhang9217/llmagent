@@ -7,7 +7,7 @@ import schemas, users_manager, auth
 from dependencies import get_db
 from security import create_access_token
 from datetime import timedelta
-from database import settings
+from config import settings
 
 router = APIRouter()
 

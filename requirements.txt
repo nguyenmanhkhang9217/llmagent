@@ -21,3 +21,7 @@ langchain-huggingface
 langchain-community
 langchain-openai
 unstructured
+python-multipart 
+langchain-chroma 
+chromadb 
+chromadb-client

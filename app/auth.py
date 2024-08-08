@@ -6,7 +6,7 @@ import jwt
 from sqlalchemy.orm import Session
 import users_manager, models, schemas
 from dependencies import get_db
-from database import settings
+from config import settings
 from security import get_password_hash, verify_password
 
 sercurity = HTTPBearer()

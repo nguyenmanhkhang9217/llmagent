@@ -4,7 +4,7 @@ load_dotenv()
 
 from fastapi import FastAPI
 from routes import include_routers
-from database import engine
+from config import engine
 from models import Base
 # import os
 

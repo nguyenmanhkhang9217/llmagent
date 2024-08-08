@@ -1,6 +1,7 @@
 # app/database.py
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from llm import LLMType
 import os
 from pydantic_settings import BaseSettings
 
@@ -16,6 +17,11 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
 settings = Settings()
+
+llm_types = [ 
+    LLMType.CHROMA, 
+    LLMType.PINECONE 
+]
 
 engine = create_engine(settings.DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
