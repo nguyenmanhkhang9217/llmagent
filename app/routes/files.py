@@ -1,15 +1,16 @@
+from llm.agent import LLMAgent
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 import shutil
 # from models import UserFile
-from agent_manager import AgentManager
 from models import Agent
+from config import llm_types
 from dependencies import get_db
 import os
 
 router = APIRouter()
-agent_manager = AgentManager()
-FILE_PATH = "data"
+agent = LLMAgent()
+FILE_PATH = "files"
 @router.post("/agents/{agent_id}/files/")
 async def upload_file(agent_id: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
     db_agent = db.query(Agent).filter(Agent.id == agent_id).first()
@@ -28,5 +29,6 @@ async def upload_file(agent_id: str, file: UploadFile = File(...), db: Session =
     # db.commit()
     # db.refresh(user_file)
 
-    agent_manager.add_file_to_agent(file_location)
+    agent.add_file(llm_types, agent_id, file_location)
+    
     return {"filename": file_location}

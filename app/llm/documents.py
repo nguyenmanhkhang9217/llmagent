@@ -1,12 +1,9 @@
-from typing import AsyncIterator, Iterator
+import os
 
-from langchain_core.document_loaders import BaseLoader
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_pinecone import PineconeVectorStore
-from settings import get_embedding_function
-from langchain_community.document_loaders import TextLoader, PyPDFLoader, UnstructuredHTMLLoader
-import os
+from langchain_community.document_loaders import TextLoader, PyPDFLoader
+
 
 # Use this link to learn how to test CustomDocumentLoader
 # https://python.langchain.com/v0.1/docs/modules/data_connection/document_loaders/custom/#test-
@@ -23,8 +20,6 @@ def load_documents(file_path):
         raise ValueError(f"Unsupported file extension: {ext}")
     return document_loader.load()
 
-
-
 def split_documents(documents: list[Document]):
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=800,
@@ -33,24 +28,6 @@ def split_documents(documents: list[Document]):
         is_separator_regex=False,
     )
     return text_splitter.split_documents(documents)
-
-def add_to_vectordb(index_name: str, chunks: list[Document]):
-    # Load the existing database.
-    db = PineconeVectorStore(index_name=index_name, embedding=get_embedding_function())
-    print(db)
-    # Calculate Page IDs.
-    chunks_with_ids = calculate_chunk_ids(chunks)
-    # Only add documents that don't exist in the DB.
-    new_chunks = []
-    for chunk in chunks_with_ids:        
-        new_chunks.append(chunk)
-
-    if len(new_chunks):
-        print(f"👉 Adding new documents: {len(new_chunks)}")
-        new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks]
-        db.add_documents(new_chunks, ids=new_chunk_ids)
-    else:
-        print("✅ No new documents to add")
 
 def calculate_chunk_ids(chunks):
 
